@@ -4,7 +4,6 @@ add_user()
 	echo "Provide details do add user: "
 	read -p "Fisrt Name : " fname
 	read -p "Last Name : " lname
-	read -p "User Id : " uid
 	read -s -p "Password: " pwd
 	echo
 	read -p "Retype Password:" cpwd
@@ -16,12 +15,16 @@ add_user()
 	if [ ! -e ~/users.dat ];then
 		touch ~/users.dat
 	fi
-	count=$(grep $uid ~/users.dat | wc -l)
-        if [ $count -ne 0 ]; then
-		echo "User Id : $uid already exists"
-                return 2
+       
+	count=$(sort ~/users.dat | wc -l)
+        if [ $count -eq 0 ]; then
+        	uid=100
+		nuid=$uid
+        else
+	        uid=$(cat ~/users.dat | tail -1| cut -d ':' -f 1)
+		nuid=$[uid+1]	
         fi
-	echo "$uid:$pwd:$fname:$lname:$zipcode" >> ~/user.dat
+	echo "$nuid:$pwd:$fname:$lname:$zipcode" >> ~/users.dat
 	echo "User Added Successfully"
 	echo
 	echo
